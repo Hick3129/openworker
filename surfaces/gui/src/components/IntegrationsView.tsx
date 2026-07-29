@@ -3,23 +3,20 @@ import { getConnectors } from "../api";
 import { McpTab } from "./ManageTabs";
 import { ConnectorsSection } from "./connectors/ConnectorsSection";
 import { Icon } from "./Icon";
+import { useTranslation } from "../i18n";
 
-// The Connectors surface (renamed from "Integrations", §26) keeps the left sub-nav, now just
-// Connectors · MCP. The old "Messaging routing" tab (and its ⚠ unrouted badge) moved whole to
-// Inbox ▸ Configure (§28): inbox-delivery config belongs with the Inbox, and Unrouted is
-// "messages that never reached you". The one remaining Activity is the audit log, reached from
-// the account menu.
+
 type IntTab = "connectors" | "mcp";
 
-// Fixed sub-nav (UX-DECISIONS §21): connector detail lives as a SUBPAGE under
-// Connectors, never as a nav item — the nav must not grow per connector.
-const INT_TABS: { key: IntTab; label: string; icon: "plug" | "code" }[] = [
-  { key: "connectors", label: "Connectors", icon: "plug" },
-  { key: "mcp", label: "MCP servers", icon: "code" },
-];
-
 export function IntegrationsView() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<IntTab>("connectors");
+
+  const INT_TABS: { key: IntTab; label: string; icon: "plug" | "code" }[] = [
+    { key: "connectors", label: t("integrations.title", "Connectors"), icon: "plug" },
+    { key: "mcp", label: "MCP servers", icon: "code" },
+  ];
+
   // Sub-nav count: how many connectors exist. Polled so the badge stays live.
   const [connCount, setConnCount] = useState<number | null>(null);
 

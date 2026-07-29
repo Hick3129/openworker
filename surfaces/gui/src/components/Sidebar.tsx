@@ -27,6 +27,7 @@ import { PersonaGlyph, personaGlyph } from "./personaIcon";
 import { SearchModal } from "./SearchModal";
 import { baseName } from "../paths";
 import { showPersonas } from "../flags";
+import { useTranslation } from "../i18n";
 
 // Session surfaces shown as accordions, in display order. The surfaced personas drive this list
 // (so third-party / Ops personas appear); the hardcoded set is the fallback before personas load.
@@ -171,6 +172,7 @@ const compactAge = (iso?: string | null): string => {
 // Sessions shown per group before "Show more" comes from Settings (sessions_peek, default 5).
 
 export function Sidebar(props: Props) {
+  const { t } = useTranslation();
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   // The account row (§26): cloud sign-in status drives the avatar/name/dot; refreshed on
@@ -1146,56 +1148,52 @@ export function Sidebar(props: Props) {
                 ) : (
                   <>
                     <div className="px-3 py-1.5 text-[11px] text-faint border-b border-line">
-                      Not signed in — one-click connections need OpenWorker Cloud
+                      {t("sidebar.not_signed_in", "Not signed in — one-click connections need OpenWorker Cloud")}
                     </div>
                     <button
                       className="w-full flex items-center gap-2.5 px-3 py-1.5 mb-1 text-[13px] text-left text-accent hover:bg-paper"
                       data-testid="account-sign-in"
                       onClick={async () => {
                         setAppMenuOpen(false);
-                        // Opens the system browser server-side; completion lands out-of-band,
-                        // so poll until it flips (refocusing the window also refetches).
                         await cloudLogin().catch(() => {});
                         waitForCloudSignIn((s) => {
                           if (s) setCloud(s);
-                          // Other always-mounted consumers (Settings' telemetry card,
-                          // connector panes) refetch on this.
                           if (s?.signed_in) announceCloudChanged();
                         });
                       }}
                     >
-                      <Icon name="plug" size={15} className="shrink-0" /> Sign in to OpenWorker
-                      Cloud
+                      <Icon name="plug" size={15} className="shrink-0" /> {t("sidebar.sign_in", "Sign in to OpenWorker Cloud")}
                     </button>
                   </>
                 )}
                 {appMenuItem(
                   "inbox",
-                  "Inbox",
+                  t("nav.inbox", "Inbox"),
                   props.onOpenInbox,
                   props.inboxActive,
                   <AttnBadge n={totalAttention} />,
                 )}
-                {appMenuItem("plug", "Connectors", props.onOpenIntegrations, props.integrationsActive)}
+                {appMenuItem("plug", t("nav.integrations", "Connectors"), props.onOpenIntegrations, props.integrationsActive)}
                 <div className="h-px bg-line my-1 mx-2" />
                 {appMenuItem(
                   "gear",
-                  "Settings",
+                  t("nav.settings", "Settings"),
                   props.onManage,
                   false,
                   <span className="text-[11px] text-faint">⌘ ,</span>,
                 )}
-                {appMenuItem("clock", "Automations", props.onOpenScheduled, props.scheduledActive)}
-                {appMenuItem("audit", "Activity", props.onOpenAudit, props.auditActive)}
+                {appMenuItem("clock", t("nav.scheduled", "Automations"), props.onOpenScheduled, props.scheduledActive)}
+                {appMenuItem("audit", t("nav.audit", "Activity Log"), props.onOpenAudit, props.auditActive)}
                 {cloud?.signed_in && (
                   <>
                     <div className="h-px bg-line my-1 mx-2" />
-                    {appMenuItem("signOut", "Sign out", async () => {
+                    {appMenuItem("signOut", t("sidebar.sign_out", "Sign out"), async () => {
                       await cloudLogout().catch(() => {});
                       announceCloudChanged();
                     })}
                   </>
                 )}
+
               </div>
             </>
           )}
@@ -1299,11 +1297,9 @@ function NewSessionSplit({
   onNew: (agent: string) => void;
   onManage: () => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const enabled = (personas || []).filter((p) => p.enabled);
-  // With a single enabled persona there is nothing to pick — the split collapses to a plain
-  // button (owner ask 2026-07-09). `personas === null` (still loading) keeps the split so the
-  // control doesn't visibly change shape once the list arrives with 2+.
   const solo = personas !== null && enabled.length <= 1;
   return (
     <div className="px-3 pt-2 relative">
@@ -1315,7 +1311,7 @@ function NewSessionSplit({
           }
           onClick={() => onNew(solo && enabled.length === 1 ? enabled[0].id : current)}
         >
-          <Icon name="plus" size={15} className="shrink-0" /> New session
+          <Icon name="plus" size={15} className="shrink-0" /> {t("nav.new_session", "New session")}
         </button>
         {!solo && (
           <button
@@ -1333,7 +1329,7 @@ function NewSessionSplit({
           <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
           <div className="newsplit-menu absolute left-3 right-3 mt-1 z-30 bg-panel border border-line rounded-xl2 shadow-xl p-1">
             <div className="px-2 py-1 text-[10.5px] uppercase tracking-[0.06em] text-faint font-semibold">
-              Start a session as
+              {t("nav.start_as", "Start a session as")}
             </div>
             {enabled.map((p) => (
               <button
@@ -1366,7 +1362,7 @@ function NewSessionSplit({
                     onManage();
                   }}
                 >
-                  Manage personas…
+                  {t("nav.manage_personas", "Manage personas…")}
                 </button>
               </div>
             )}
@@ -1376,3 +1372,4 @@ function NewSessionSplit({
     </div>
   );
 }
+

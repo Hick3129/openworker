@@ -16,6 +16,7 @@ import { InboxItemCard } from "./InboxItemCard";
 import { InboxConfigure } from "./InboxConfigure";
 import { PanelHead } from "./IntegrationsView";
 import { shortPersonaName } from "../personaScope";
+import { useTranslation } from "../i18n";
 
 const ICON_FOR: Record<string, "diamond" | "chat" | "code"> = {
   cowork: "diamond",
@@ -56,6 +57,7 @@ export function InboxView({
 }: {
   onOpenSession: (sessionId: string, workspace: string, agent: string) => void;
 }) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"pending" | "configure">("pending");
   const [items, setItems] = useState<InboxItem[]>([]);
   const [personas, setPersonas] = useState<Persona[] | null>(null);
@@ -145,8 +147,8 @@ export function InboxView({
       <div className="flex-1 min-w-0 overflow-y-auto hairline-scroll">
         <div className="max-w-4xl mx-auto px-7 py-6">
           <PanelHead
-            title="Inbox"
-            sub="Approvals, questions, and notifications from your coworkers — including sessions running unattended."
+            title={t("inbox.title", "Inbox")}
+            sub={t("inbox.subtitle", "Approvals, questions, and notifications from your coworkers — including sessions running unattended.")}
           />
 
           <div className="flex gap-5 border-b border-line mb-4">

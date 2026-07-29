@@ -6,6 +6,7 @@ import { formatTokens, totalTokens } from "../usage";
 import { Dropdown, type Option } from "./Dropdown";
 import { Icon } from "./Icon";
 import { Toggle } from "./Toggle";
+import { useTranslation } from "../i18n";
 import {
   cancelDictation,
   getDictationLevel,
@@ -87,6 +88,7 @@ interface Props {
 }
 
 export function Composer(props: Props) {
+  const { t } = useTranslation();
   const [text, setText] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [dragging, setDragging] = useState(false);
@@ -397,7 +399,7 @@ export function Composer(props: Props) {
         <textarea
           ref={textareaRef}
           className="w-full block px-3.5 pt-3.5 pb-1.5 text-[14.5px]"
-          placeholder={props.placeholder || "Ask the coworker…  (drop or paste files)"}
+          placeholder={props.placeholder || t("composer.placeholder", "Ask the coworker…  (drop or paste files)")}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKey}
