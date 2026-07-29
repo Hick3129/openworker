@@ -39,6 +39,7 @@ import { ModelsTab } from "./ManageTabs";
 import { GalleryModal } from "./GalleryModal";
 import { PersonasTab } from "./PersonasTab";
 import { showPersonas } from "../flags";
+import { useTranslation } from "../i18n";
 
 // Settings, restructured (Option 2) into a full-page surface that mirrors IntegrationsView's shell:
 // a left sub-nav (Appearance · Files · Models · Personas) + centered panel, replacing the old
@@ -386,6 +387,28 @@ function PersonasSection({ onOpenPersona }: { onOpenPersona?: (id: string) => vo
   );
 }
 
+function LanguageCard() {
+  const { lang, setLanguage, t } = useTranslation();
+  return (
+    <div className={CARD + " p-4 mb-4"}>
+      <div className={FIELD_LABEL}>{t("language.select", "介面語言 (Language)")}</div>
+      <div className="seg mt-2.5" role="radiogroup" aria-label="Language">
+        <button className={lang === "zh-TW" ? "active" : ""} onClick={() => setLanguage("zh-TW")}>
+          繁體中文
+        </button>
+        <button className={lang === "en" ? "active" : ""} onClick={() => setLanguage("en")}>
+          English
+        </button>
+      </div>
+      <div className={FIELD_HELP}>
+        {lang === "zh-TW"
+          ? "選擇 OpenWorker 介面偏好的顯示語言。"
+          : "Choose your preferred language for the OpenWorker interface."}
+      </div>
+    </div>
+  );
+}
+
 // -- Appearance + app behaviour ------------------------------------------------
 function AppearanceSection() {
   const [theme, setTheme] = useThemePref();
@@ -422,6 +445,8 @@ function AppearanceSection() {
         </div>
         <div className={FIELD_HELP}>Auto follows your Mac&rsquo;s appearance.</div>
       </div>
+
+      <LanguageCard />
 
       <SidebarCard />
 
