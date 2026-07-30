@@ -7,6 +7,7 @@ export const en = {
   "nav.start_as": "Start a session as",
   "nav.manage_personas": "Manage personas…",
   "nav.sessions": "Sessions",
+  "nav.recent": "Recent",
   "nav.inbox": "Inbox",
   "nav.scheduled": "Automations",
   "nav.settings": "Settings",
@@ -16,12 +17,15 @@ export const en = {
   "nav.search": "Search sessions...",
 
   // Sidebar Account & Cloud
-  "sidebar.not_signed_in": "Not signed in — one-click connections need OpenWorker Cloud",
+  "sidebar.not_signed_in": "Not signed in",
+  "sidebar.not_signed_in_help": "Not signed in — one-click connections need OpenWorker Cloud",
   "sidebar.sign_in": "Sign in to OpenWorker Cloud",
   "sidebar.sign_out": "Sign out",
   "sidebar.awaiting_attention": "awaiting your attention",
   "sidebar.working_now": "Working now",
   "sidebar.sleeping": "Sleeping (will wake itself)",
+  "sidebar.conversations_shown": "Conversations shown per coworker",
+  "sidebar.longer_lists_help": "Longer lists collapse behind \"Show more\". Applies per coworker and per project.",
 
   // Composer
   "composer.placeholder": "Ask OpenWorker to prepare a brief, draft a report, untangle calendar...",
@@ -55,9 +59,14 @@ export const en = {
   "settings.keep_awake_help": "Prevent idle sleep so scheduled tasks fire on time.",
   "settings.trusted_workspaces": "Trusted workspaces",
   "settings.trusted_workspaces_help": "Trusted projects may manage their command allowances in .coworker/config.toml.",
+  "settings.no_workspaces_trusted": "No workspaces are trusted.",
   "settings.files": "Files",
-  "settings.files_help": "Each conversation gets its own folder under this location.",
+  "settings.files_help": "Each conversation gets its own folder under this location. Existing conversations keep their current folder; you can grant access to more folders inside any conversation.",
   "settings.token_savings": "Token savings",
+  "settings.setup_and_updates": "Setup & updates",
+  "settings.run_setup_again": "Run setup again",
+  "settings.run_setup_help": "Replays the first-run setup: model, first automation, tips.",
+  "settings.check_for_updates": "Check for updates",
 
   // Inbox & Automations
   "inbox.title": "Inbox",

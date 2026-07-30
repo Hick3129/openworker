@@ -9,6 +9,7 @@ export const zhTW: Record<TranslationKeys, string> = {
   "nav.start_as": "選擇身份開始對話：",
   "nav.manage_personas": "管理角色與 Persona…",
   "nav.sessions": "對話紀錄",
+  "nav.recent": "近期對話 (Recent)",
   "nav.inbox": "待辦/收件匣",
   "nav.scheduled": "自動化與定時任務",
   "nav.settings": "系統設定",
@@ -18,12 +19,15 @@ export const zhTW: Record<TranslationKeys, string> = {
   "nav.search": "搜尋對話紀錄...",
 
   // Sidebar Account & Cloud
-  "sidebar.not_signed_in": "未登入 — 一鍵應用連線需要登入 OpenWorker Cloud",
+  "sidebar.not_signed_in": "未登入帳號",
+  "sidebar.not_signed_in_help": "未登入 — 一鍵應用連線需要登入 OpenWorker Cloud",
   "sidebar.sign_in": "登入 OpenWorker Cloud",
   "sidebar.sign_out": "登出帳號",
   "sidebar.awaiting_attention": "個項目等待您的處理",
   "sidebar.working_now": "正在執行工作中...",
   "sidebar.sleeping": "待機中 (將定時自動喚醒)",
+  "sidebar.conversations_shown": "各領域顯示對話數量",
+  "sidebar.longer_lists_help": "超出的對話會收納於「顯示更多」後，套用於各領域與專案。",
 
   // Composer
   "composer.placeholder": "請輸入您的需求，例如「準備客戶簡報」、「整理行事曆」、「撰寫週報」...",
@@ -36,7 +40,7 @@ export const zhTW: Record<TranslationKeys, string> = {
   // Settings
   "settings.title": "系統設定",
   "settings.subtitle": "管理 OpenWorker 在此電腦上的外觀與運作行為。",
-  "settings.models": "模型與 Key 設定",
+  "settings.models": "AI 模型與 Key",
   "settings.general": "一般偏好",
   "settings.voice": "語音輸入",
   "settings.personas": "角色 Persona",
@@ -57,9 +61,14 @@ export const zhTW: Record<TranslationKeys, string> = {
   "settings.keep_awake_help": "防止電腦進入睡眠狀態，以確保定時自動化任務能準時觸發執行。",
   "settings.trusted_workspaces": "受信任的工作區 (Trusted Workspaces)",
   "settings.trusted_workspaces_help": "受信任的專案可在 .coworker/config.toml 中設定指令授權。",
+  "settings.no_workspaces_trusted": "目前尚無受信任的工作區。",
   "settings.files": "本機檔案位置",
-  "settings.files_help": "每個對話都會在此位置下建立專屬資料夾以儲存檔案產出。",
+  "settings.files_help": "每個對話都會在此位置下建立專屬資料夾以儲存檔案產出。現有對話將保留其原資料夾，您可以在對話中授權存取更多資料夾。",
   "settings.token_savings": "Token 額度省電最佳化",
+  "settings.setup_and_updates": "初始化設定與版本更新",
+  "settings.run_setup_again": "重新執行首次引導",
+  "settings.run_setup_help": "重新體驗首次使用引導：模型選擇、第一個自動化任務與技巧提示。",
+  "settings.check_for_updates": "檢查版本更新",
 
   // Inbox & Automations
   "inbox.title": "待辦/收件匣 (Inbox)",

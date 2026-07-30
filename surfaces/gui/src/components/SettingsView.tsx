@@ -59,13 +59,6 @@ const BTN_ACCENT = "text-[12.5px] px-3 py-2 rounded-lg bg-accent text-white shri
 const BTN_BORDERED =
   "text-[12.5px] px-3 py-2 rounded-lg border border-line bg-paper hover:border-lineStrong shrink-0";
 
-const SET_TABS: { key: SetTab; label: string; icon: "sliders" | "code" | "mic" | "sparkle" }[] = [
-  { key: "appearance", label: "General", icon: "sliders" },
-  { key: "models", label: "Models", icon: "code" },
-  { key: "voice", label: "Voice input", icon: "mic" },
-  { key: "personas", label: "Personas", icon: "sparkle" },
-];
-
 export function SettingsView({
   initialTab,
   onOpenPersona,
@@ -73,11 +66,16 @@ export function SettingsView({
   initialTab?: SetTab;
   onOpenPersona?: (id: string) => void;
 }) {
-  // Personas is flag-gated (hidden for launch) — filter the tab AND coerce a stale
-  // deep-link to it (openSettings("personas") callers) so the page never opens on a
-  // section with no nav entry.
+  const { t } = useTranslation();
+  const setTabs: { key: SetTab; label: string; icon: "sliders" | "code" | "mic" | "sparkle" }[] = [
+    { key: "appearance", label: t("settings.general", "General"), icon: "sliders" },
+    { key: "models", label: t("settings.models", "Models"), icon: "code" },
+    { key: "voice", label: t("settings.voice", "Voice input"), icon: "mic" },
+    { key: "personas", label: t("settings.personas", "Personas"), icon: "sparkle" },
+  ];
+
   const personas = showPersonas();
-  const tabs = personas ? SET_TABS : SET_TABS.filter((t) => t.key !== "personas");
+  const tabs = personas ? setTabs : setTabs.filter((t) => t.key !== "personas");
   const wanted = initialTab && (personas || initialTab !== "personas") ? initialTab : "appearance";
   const [tab, setTab] = useState<SetTab>(wanted);
 
@@ -85,20 +83,20 @@ export function SettingsView({
     <main className="flex-1 min-w-0 flex bg-paper">
       <nav className="page-subnav w-[208px] shrink-0 border-r border-line bg-panel/40 px-3 py-4">
         <div className="px-2 text-[13.5px] font-semibold mb-3 flex items-center gap-2">
-          <Icon name="gear" size={16} /> Settings
+          <Icon name="gear" size={16} /> {t("settings.title", "Settings")}
         </div>
-        {tabs.map((t) => {
-          const active = tab === t.key;
+        {tabs.map((tItem) => {
+          const active = tab === tItem.key;
           return (
             <button
-              key={t.key}
+              key={tItem.key}
               className={
                 "w-full text-left px-2.5 py-2 rounded-lg text-[13px] flex items-center gap-2 " +
                 (active ? "bg-paper text-accent font-medium" : "text-muted hover:bg-paper hover:text-ink")
               }
-              onClick={() => setTab(t.key)}
+              onClick={() => setTab(tItem.key)}
             >
-              <Icon name={t.icon} size={15} /> {t.label}
+              <Icon name={tItem.icon} size={15} /> {tItem.label}
             </button>
           );
         })}
@@ -111,12 +109,10 @@ export function SettingsView({
           ) : tab === "models" ? (
             <section>
               <PanelHead
-                title="Models"
+                title={t("settings.models", "Models")}
                 sub="Providers and the models offered in the composer's picker. Keys are stored only on this computer."
               />
               <ModelsTab />
-              {/* Token savings is model-spend behavior, so it lives here (UX-021),
-                  not under General. */}
               <div className="mt-6">
                 <TokenSavingsCard />
               </div>
@@ -131,6 +127,7 @@ export function SettingsView({
     </main>
   );
 }
+
 
 // -- Voice input: deliberate model provisioning + compatibility + microphone test (§37) --------
 const voiceError = (error: unknown) =>
@@ -411,6 +408,7 @@ function LanguageCard() {
 
 // -- Appearance + app behaviour ------------------------------------------------
 function AppearanceSection() {
+  const { t } = useTranslation();
   const [theme, setTheme] = useThemePref();
   const [autostart, setAuto] = useState(false);
   const [keepAwake, setKeep] = useState(false);
@@ -432,18 +430,18 @@ function AppearanceSection() {
 
   return (
     <section>
-      <PanelHead title="General" sub="How OpenWorker looks and behaves on this machine." />
+      <PanelHead title={t("settings.general", "General")} sub={t("settings.subtitle", "How OpenWorker looks and behaves on this machine.")} />
 
       <div className={CARD + " p-4 mb-4"}>
-        <div className={FIELD_LABEL}>Theme</div>
+        <div className={FIELD_LABEL}>{t("settings.theme", "Theme")}</div>
         <div className="seg mt-2.5" role="radiogroup" aria-label="Appearance">
           {(["light", "dark", "auto"] as const).map((p) => (
             <button key={p} className={p === theme ? "active" : ""} onClick={() => setTheme(p)}>
-              {p === "light" ? "Light" : p === "dark" ? "Dark" : "Auto"}
+              {p === "light" ? t("settings.theme_light", "Light") : p === "dark" ? t("settings.theme_dark", "Dark") : t("settings.theme_auto", "Auto")}
             </button>
           ))}
         </div>
-        <div className={FIELD_HELP}>Auto follows your Mac&rsquo;s appearance.</div>
+        <div className={FIELD_HELP}>{t("settings.theme_help", "Auto follows your operating system's appearance.")}</div>
       </div>
 
       <LanguageCard />
@@ -456,42 +454,41 @@ function AppearanceSection() {
 
       {desktop && (
         <div className={CARD + " p-4"}>
-          <div className={FIELD_LABEL + " mb-2.5"}>Always-on</div>
+          <div className={FIELD_LABEL + " mb-2.5"}>{t("settings.always_on", "Always-on")}</div>
           <label className="flex items-start gap-3 py-2">
             <input type="checkbox" className="mt-0.5" checked={autostart} onChange={(e) => toggleAuto(e.target.checked)} />
             <span>
-              <span className="block text-[13px] text-ink">Open at login</span>
-              <span className="block text-[12px] text-muted">Launch OpenWorker automatically when you sign in.</span>
+              <span className="block text-[13px] text-ink">{t("settings.open_at_login", "Open at login")}</span>
+              <span className="block text-[12px] text-muted">{t("settings.open_at_login_help", "Launch OpenWorker automatically when you sign in.")}</span>
             </span>
           </label>
           <label className="flex items-start gap-3 py-2">
             <input type="checkbox" className="mt-0.5" checked={keepAwake} onChange={(e) => toggleKeep(e.target.checked)} />
             <span>
-              <span className="block text-[13px] text-ink">Keep this system awake</span>
-              <span className="block text-[12px] text-muted">Prevent idle sleep so scheduled tasks fire on time.</span>
+              <span className="block text-[13px] text-ink">{t("settings.keep_awake", "Keep this system awake")}</span>
+              <span className="block text-[12px] text-muted">{t("settings.keep_awake_help", "Prevent idle sleep so scheduled tasks fire on time.")}</span>
             </span>
           </label>
         </div>
       )}
 
-      {/* One card for the app-lifecycle actions (UX-021): the onboarding replay (§24 —
-          every build, the browser dev shell runs the same first-run flow) and, on
-          desktop, the manual update check (launch also checks automatically). */}
       <div className={CARD + " p-4 mt-4"}>
-        <div className={FIELD_LABEL + " mb-2"}>Setup &amp; updates</div>
+        <div className={FIELD_LABEL + " mb-2"}>{t("settings.setup_and_updates", "Setup & updates")}</div>
         <div className="flex items-center gap-2">
           <button className={BTN_BORDERED} onClick={runSetupAgain}>
-            Run setup again
+            {t("settings.run_setup_again", "Run setup again")}
           </button>
           {desktop && <UpdateInline />}
         </div>
-        <div className={FIELD_HELP}>Replays the first-run setup: model, first automation, tips.</div>
+        <div className={FIELD_HELP}>{t("settings.run_setup_help", "Replays the first-run setup: model, first automation, tips.")}</div>
       </div>
     </section>
   );
 }
 
+
 function TrustedWorkspacesCard() {
+  const { t } = useTranslation();
   const [workspaces, setWorkspaces] = useState<WorkspaceCommandTrust[] | null>(null);
 
   const refresh = () =>
@@ -511,14 +508,14 @@ function TrustedWorkspacesCard() {
 
   return (
     <div className={CARD + " p-4 mb-4"} data-testid="trusted-workspaces-card">
-      <div className={FIELD_LABEL}>Trusted workspaces</div>
+      <div className={FIELD_LABEL}>{t("settings.trusted_workspaces", "Trusted workspaces")}</div>
       <div className={FIELD_HELP}>
-        Trusted projects may manage their command allowances in .coworker/config.toml.
+        {t("settings.trusted_workspaces_help", "Trusted projects may manage their command allowances in .coworker/config.toml.")}
       </div>
       {workspaces === null ? (
-        <div className="text-[12px] text-muted mt-3">Loading…</div>
+        <div className="text-[12px] text-muted mt-3">{t("common.loading", "Loading…")}</div>
       ) : workspaces.length === 0 ? (
-        <div className="text-[12px] text-muted mt-3">No workspaces are trusted.</div>
+        <div className="text-[12px] text-muted mt-3">{t("settings.no_workspaces_trusted", "No workspaces are trusted.")}</div>
       ) : (
         <div className="mt-3 divide-y divide-line">
           {workspaces.map((workspace) => (
@@ -545,6 +542,7 @@ function TrustedWorkspacesCard() {
     </div>
   );
 }
+
 
 function UpdateInline() {
   const [state, setState] = useState<"idle" | "checking" | "none" | "found" | "installing" | "error">("idle");
@@ -698,6 +696,7 @@ function TokenSavingsCard() {
 }
 
 function SidebarCard() {
+  const { t } = useTranslation();
   const [peek, setPeek] = useState<number | null>(null);
 
   useEffect(() => {
@@ -715,9 +714,9 @@ function SidebarCard() {
   if (peek === null) return null;
   return (
     <div className={CARD + " p-4 mb-4"}>
-      <div className={FIELD_LABEL}>Sidebar</div>
+      <div className={FIELD_LABEL}>{t("nav.sessions", "Sidebar")}</div>
       <label className="flex items-center gap-3 mt-2.5">
-        <span className="text-[13px] text-ink">Conversations shown per coworker</span>
+        <span className="text-[13px] text-ink">{t("sidebar.conversations_shown", "Conversations shown per coworker")}</span>
         <input
           type="number"
           min={1}
@@ -728,15 +727,14 @@ function SidebarCard() {
         />
       </label>
       <div className={FIELD_HELP}>
-        Longer lists collapse behind &ldquo;Show more&rdquo;. Applies per coworker and per project.
+        {t("sidebar.longer_lists_help", "Longer lists collapse behind \"Show more\". Applies per coworker and per project.")}
       </div>
     </div>
   );
 }
 
-// -- Files (scratch location) — one card inside General (UX-021: a single option
-// doesn't earn its own tab) -----------------------------------------------------
 function FilesCard() {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<ModelSettings | null>(null);
   const [scratchDraft, setScratchDraft] = useState("");
   const [scratchMsg, setScratchMsg] = useState<string | null>(null);
@@ -772,7 +770,7 @@ function FilesCard() {
 
   return (
     <div className={CARD + " p-4 mb-4"}>
-      <div className={FIELD_LABEL}>Files</div>
+      <div className={FIELD_LABEL}>{t("settings.files", "Files")}</div>
         <div className="flex items-center gap-2 mt-2.5">
           <input
             className={INPUT}
@@ -786,18 +784,18 @@ function FilesCard() {
           />
           {desktop && (
             <button className={BTN_BORDERED} onClick={browseScratch} title="Pick a folder">
-              Browse
+              {t("common.browse", "Browse")}
             </button>
           )}
           <button className={BTN_ACCENT} onClick={saveScratch} disabled={!scratchDraft.trim()}>
-            Save
+            {t("settings.save", "Save")}
           </button>
         </div>
       <div className={FIELD_HELP}>
-        Each conversation gets its own folder under this location. Existing conversations keep their current
-        folder; you can grant access to more folders inside any conversation.
+        {t("settings.files_help", "Each conversation gets its own folder under this location. Existing conversations keep their current folder; you can grant access to more folders inside any conversation.")}
       </div>
       {scratchMsg && <div className="text-[12.5px] text-muted mt-2.5">{scratchMsg}</div>}
     </div>
   );
 }
+
